@@ -107,8 +107,14 @@ class Team:
         for player in self.players:
             if player.name == player_name.title():
                 stat = input("Enter stat name to update: ")
-                value = float(input("Enter value to add: "))
-                player.update_stats(stat, value)
+                try:
+                    value = float(input("Enter value to add: "))
+                    if value < 0:
+                        print("❌ Stat value cannot be negative.")
+                        return
+                    player.update_stats(stat, value)
+                except ValueError:
+                    print("❌ Invalid input! Please enter a numeric value.")
                 return
         print(f"❌ Player {player_name} not found.")
 
@@ -143,8 +149,27 @@ if __name__ == "__main__":
 
         elif choice == "2":
             if team:
-                name = input("Enter player name: ")
-                age = int(input("Enter player age: "))
+                # Validate player name
+                while True:
+                    name = input("Enter player name: ").strip()
+                    if not name:
+                        print("❌ Name cannot be empty.")
+                    elif name.isnumeric():
+                        print("❌ Name cannot be numeric. Please enter a valid name.")
+                    else:
+                        break
+
+                # Immediately validate age
+                while True:
+                    try:
+                        age = int(input("Enter player age: "))
+                        if age <= 0:
+                            print("❌ Invalid age! Age must be a positive number.")
+                            continue
+                        break
+                    except ValueError:
+                        print("❌ Invalid input! Please enter a numeric age.")
+
                 position = input("Enter player position: ")
                 player = Player(name, age, position)
                 team.add_player(player)
